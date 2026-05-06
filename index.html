@@ -120,6 +120,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pill-conf{display:inline-block;background:#FCEBEB;color:#A32D2D;border-radius:4px;padding:1px 6px;font-size:10px;margin-left:4px;font-weight:500}
 .toast{position:fixed;bottom:28px;right:28px;background:#1a1a18;color:#fff;border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;z-index:2000;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
+.cell-popup{position:fixed;z-index:3000;background:#fff;border:1px solid #ece9e2;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:14px 16px;min-width:200px;max-width:260px;pointer-events:none;opacity:0;transform:scale(0.95);transition:opacity 0.15s,transform 0.15s;transform-origin:top left}
+.cell-popup.show{opacity:1;transform:scale(1);pointer-events:auto}
+.cell-popup-close{position:absolute;top:8px;right:10px;border:none;background:none;font-size:16px;color:#bbb;cursor:pointer;padding:2px 4px;line-height:1}
+.cell-popup-close:hover{color:#1a1a18}
+.cell-popup-guest{font-size:14px;font-weight:600;color:#1a1a18;margin-bottom:6px;padding-right:20px}
+.cell-popup-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;color:#666}
+.cell-popup-row:last-child{margin-bottom:0}
+.cell-popup-icon{width:14px;text-align:center;flex-shrink:0;color:#aaa}
+.cell-popup-edit{display:block;width:100%;margin-top:10px;background:#f5f4f0;border:none;border-radius:7px;padding:7px;font-size:12px;font-weight:500;color:#1a1a18;cursor:pointer;font-family:inherit;text-align:center;transition:background 0.15s}
+.cell-popup-edit:hover{background:#e8e7e2}
 </style>
 </head>
 <body>
@@ -187,6 +197,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div id="booking-list"></div>
     </div>
   </div>
+</div>
+
+<div class="cell-popup" id="cell-popup">
+  <button class="cell-popup-close" onclick="closePopup()">&#10005;</button>
+  <div class="cell-popup-guest" id="cp-guest"></div>
+  <div class="cell-popup-row"><span class="cell-popup-icon">&#128197;</span><span id="cp-dates"></span></div>
+  <div class="cell-popup-row"><span class="cell-popup-icon">&#127968;</span><span id="cp-villa"></span></div>
+  <div class="cell-popup-row"><span class="cell-popup-icon">&#127991;</span><span id="cp-type"></span></div>
+  <div class="cell-popup-row"><span class="cell-popup-icon">&#128222;</span><span id="cp-contact"></span></div>
+  <div class="cell-popup-row" id="cp-notes-row"><span class="cell-popup-icon">&#128203;</span><span id="cp-notes"></span></div>
+  <div class="cell-popup-row"><span class="cell-popup-icon">&#128181;</span><span id="cp-price"></span></div>
+  <button class="cell-popup-edit" id="cp-edit-btn">Edit booking</button>
 </div>
 
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -264,8 +286,11 @@ function renderCalendar(){
       var bk=bookings.find(function(b){return b.villa===v&&inRange(calYear,calMonth,d,b)});
       var isTd=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
       var cls='day-cell '+(bk?getCalCls(bk):'empty')+(isTd?' today-mark':'');
-      var tt=bk?bk.guest+' ('+bk.type+', '+bk.source+')':'';
-      rows+='<div class="'+cls+'" title="'+tt+'"></div>';
+      if(bk){
+        rows+='<div class="'+cls+'" onclick="showPopup(event,'+bk.id+')"></div>';
+      } else {
+        rows+='<div class="'+cls+'"></div>';
+      }
     }
     rows+='</div>';
   });
@@ -375,6 +400,41 @@ function saveBooking(){
 
 function closeModal(){document.getElementById('modal-overlay').classList.remove('show');editId=null}
 
+function showPopup(e,id){
+  e.stopPropagation();
+  var b=bookings.find(function(x){return x.id===id});
+  if(!b)return;
+  document.getElementById('cp-guest').textContent=b.guest;
+  document.getElementById('cp-dates').textContent=fmtD(b.checkin)+' → '+fmtD(b.checkout);
+  document.getElementById('cp-villa').textContent=b.villa;
+  document.getElementById('cp-type').textContent=b.type.charAt(0).toUpperCase()+b.type.slice(1)+' · '+b.source;
+  document.getElementById('cp-contact').textContent=b.contact||'—';
+  var notesRow=document.getElementById('cp-notes-row');
+  if(b.notes){document.getElementById('cp-notes').textContent=b.notes;notesRow.style.display='flex'}
+  else{notesRow.style.display='none'}
+  document.getElementById('cp-price').textContent=fmtIDR(b.price);
+  document.getElementById('cp-edit-btn').onclick=function(){closePopup();openEdit(id)};
+  var popup=document.getElementById('cell-popup');
+  popup.style.display='block';
+  // Position smartly near the tap/click
+  var vw=window.innerWidth,vh=window.innerHeight;
+  var pw=268,ph=220;
+  var x=e.clientX+12,y=e.clientY+12;
+  if(x+pw>vw-8)x=e.clientX-pw-8;
+  if(y+ph>vh-8)y=e.clientY-ph-8;
+  if(x<8)x=8;
+  if(y<8)y=8;
+  popup.style.left=x+'px';
+  popup.style.top=y+'px';
+  requestAnimationFrame(function(){popup.classList.add('show')});
+}
+
+function closePopup(){
+  var popup=document.getElementById('cell-popup');
+  popup.classList.remove('show');
+  setTimeout(function(){popup.style.display='none'},150);
+}
+
 function refresh(){renderMetrics();if(currentView==='calendar')renderCalendar();if(currentView==='bookings')renderBookings()}
 
 function openImport(){
@@ -481,6 +541,11 @@ function doImport(rows){
   rows.forEach(function(r){bookings.push(Object.assign({id:nextId++},r))});
   saveBookings();closeModal();refresh();toast(rows.length+' bookings imported from Hostaway');
 }
+
+document.addEventListener('click',function(e){
+  var popup=document.getElementById('cell-popup');
+  if(popup.classList.contains('show')&&!popup.contains(e.target)){closePopup()}
+});
 
 refresh();renderCalendar();
 </script>
