@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manis Villas — Booking Manager</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a18;min-height:100vh}
+.outer{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.logo{font-size:20px;font-weight:600;color:#1a1a18;letter-spacing:-0.4px}
+.logo span{color:#1D9E75}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tab-btns{display:flex;gap:3px;background:#e8e7e2;border-radius:9px;padding:3px}
+.tab-btn{border:none;background:transparent;padding:6px 14px;font-size:13px;border-radius:7px;cursor:pointer;color:#666;font-family:inherit;transition:all 0.15s}
+.tab-btn.active{background:#fff;color:#1a1a18;font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.add-btn{background:#1D9E75;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.add-btn:hover{background:#0F6E56}
+.import-btn{background:#fff;color:#444;border:1px solid #ddd;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all 0.15s}
+.import-btn:hover{border-color:#aaa;color:#1a1a18}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.metric{background:#fff;border-radius:12px;padding:16px 18px;border:1px solid #ece9e2}
+.metric-label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:7px}
+.metric-val{font-size:24px;font-weight:600;color:#1a1a18;line-height:1}
+.metric-sub{font-size:12px;color:#888;margin-top:5px}
+.section-title{font-size:11px;font-weight:600;color:#999;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.6px}
+.cal-wrap{background:#fff;border:1px solid #ece9e2;border-radius:14px;overflow:hidden;margin-bottom:24px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #f0ede8;flex-wrap:wrap;gap:10px}
+.cal-nav{display:flex;align-items:center;gap:10px}
+.cal-nav-btn{background:none;border:1px solid #ddd;border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:16px;color:#666;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;transition:all 0.15s}
+.cal-nav-btn:hover{background:#f5f4f0;border-color:#bbb}
+.cal-month{font-size:15px;font-weight:600;color:#1a1a18;min-width:140px;text-align:center}
+.cal-legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#777}
+.leg-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.cal-grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cal-grid{min-width:620px}
+.villa-row-header{display:grid;grid-template-columns:80px repeat(31,1fr);background:#faf9f6;border-bottom:1px solid #f0ede8}
+.villa-row-header span{font-size:10px;color:#aaa;text-align:center;padding:5px 0}
+.villa-row-header .first{font-size:11px;color:#888;padding-left:12px;text-align:left;font-weight:500}
+.villa-row{display:grid;grid-template-columns:80px repeat(31,1fr);border-bottom:1px solid #f5f3ef;height:38px;align-items:center}
+.villa-row:last-child{border-bottom:none}
+.villa-label{font-size:12px;font-weight:600;color:#888;padding-left:12px;white-space:nowrap}
+.day-cell{height:28px;margin:2px 1px;border-radius:4px;cursor:pointer;transition:outline 0.1s}
+.day-cell:hover{outline:2px solid #1D9E75;outline-offset:0}
+.day-cell.booked-daily{background:#9FE1CB}
+.day-cell.booked-weekly{background:#B5D4F4}
+.day-cell.booked-monthly{background:#F4C0D1}
+.day-cell.booked-yearly{background:#FAC775}
+.day-cell.booked-hostaway{background:#C0DD97}
+.day-cell.today-mark{outline:2px solid #1D9E75;outline-offset:0}
+.day-cell.empty{background:#f8f7f4}
+.bookings-wrap{background:#fff;border:1px solid #ece9e2;border-radius:14px;overflow:hidden}
+.bookings-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #f0ede8;flex-wrap:wrap;gap:10px}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{border:1px solid #ddd;background:transparent;border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;color:#666;font-family:inherit;transition:all 0.15s}
+.filter-btn.active{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.filter-btn:hover:not(.active){background:#f5f4f0;color:#1a1a18}
+.blist-header{display:grid;grid-template-columns:90px minmax(0,1.4fr) minmax(0,1fr) 115px 95px 56px;gap:8px;padding:9px 18px;background:#faf9f6;font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #f0ede8}
+.booking-row{display:grid;grid-template-columns:90px minmax(0,1.4fr) minmax(0,1fr) 115px 95px 56px;gap:8px;align-items:center;padding:11px 18px;border-bottom:1px solid #f5f3ef;font-size:13px;transition:background 0.1s}
+.booking-row:last-child{border-bottom:none}
+.booking-row:hover{background:#faf9f6}
+.villa-badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
+.v1{background:#E1F5EE;color:#085041}
+.v2{background:#E6F1FB;color:#0C447C}
+.v3{background:#FAEEDA;color:#633806}
+.v4{background:#FBEAF0;color:#72243E}
+.src-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;white-space:nowrap}
+.src-hostaway{background:#EAF3DE;color:#27500A}
+.src-whatsapp{background:#E1F5EE;color:#085041}
+.src-direct{background:#FAEEDA;color:#633806}
+.type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;white-space:nowrap}
+.t-daily{background:#9FE1CB;color:#085041}
+.t-weekly{background:#B5D4F4;color:#0C447C}
+.t-monthly{background:#F4C0D1;color:#72243E}
+.t-yearly{background:#FAC775;color:#633806}
+.guest-name{font-weight:600;color:#1a1a18;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.guest-contact{font-size:11px;color:#aaa;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dates-cell{color:#666;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price-cell{font-weight:600;color:#1a1a18;font-size:12px;text-align:right;white-space:nowrap}
+.action-btn{border:none;background:none;cursor:pointer;color:#bbb;font-size:14px;padding:3px 5px;border-radius:5px;font-family:inherit;transition:all 0.15s}
+.action-btn:hover{color:#1a1a18;background:#f0ede8}
+.action-btn.del:hover{color:#A32D2D;background:#FCEBEB}
+.search-input{border:1px solid #ddd;border-radius:8px;padding:7px 11px;font-size:12px;background:#fff;color:#1a1a18;font-family:inherit;width:160px;transition:border 0.15s}
+.search-input:focus{outline:none;border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,0.1)}
+.empty-state{padding:40px;text-align:center;color:#bbb;font-size:13px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:26px;width:500px;max-width:95vw;border:1px solid #ece9e2;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-bottom:40px}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:20px;color:#1a1a18}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:12px;color:#666;font-weight:500}
+.form-input,.form-select,.form-textarea{border:1px solid #ddd;border-radius:8px;padding:8px 11px;font-size:13px;background:#fff;color:#1a1a18;font-family:inherit;width:100%;transition:border 0.15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,0.1)}
+.form-textarea{resize:vertical;min-height:60px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.cancel-btn{background:none;border:1px solid #ddd;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;color:#666;font-family:inherit;transition:all 0.15s}
+.cancel-btn:hover{background:#f5f4f0;border-color:#bbb}
+.save-btn{background:#1D9E75;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.save-btn:hover{background:#0F6E56}
+.danger-btn{background:#A32D2D;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
+.danger-btn:hover{background:#791F1F}
+.alert-box{border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.5}
+.alert-warn{background:#FAEEDA;color:#633806;border:1px solid #FAC775}
+.alert-danger{background:#FCEBEB;color:#A32D2D;border:1px solid #F7C1C1}
+.alert-success{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.import-zone{border:2px dashed #ddd;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.15s}
+.import-zone:hover{background:#faf9f6;border-color:#1D9E75}
+.import-zone p{font-size:13px;color:#999;margin-top:6px}
+.import-zone strong{font-size:14px;color:#1a1a18;font-weight:500}
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.map-label{font-size:12px;color:#666;margin-bottom:4px;font-weight:500}
+.conflict-list{max-height:130px;overflow-y:auto;margin-top:8px;border:1px solid #f0ede8;border-radius:8px;padding:4px 8px}
+.conflict-item{font-size:12px;padding:5px 0;border-bottom:1px solid #f5f3ef;color:#666}
+.conflict-item:last-child{border-bottom:none}
+.pill-conf{display:inline-block;background:#FCEBEB;color:#A32D2D;border-radius:4px;padding:1px 6px;font-size:10px;margin-left:4px;font-weight:500}
+.toast{position:fixed;bottom:28px;right:28px;background:#1a1a18;color:#fff;border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;z-index:2000;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="outer">
+  <div class="topbar">
+    <div class="logo">Manis <span>Villas</span> &mdash; Booking Manager</div>
+    <div class="topbar-right">
+      <button class="import-btn" onclick="openImport()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Import Hostaway CSV
+      </button>
+      <div class="tab-btns">
+        <button class="tab-btn active" id="tab-cal" onclick="setView('calendar')">Calendar</button>
+        <button class="tab-btn" id="tab-book" onclick="setView('bookings')">Bookings</button>
+      </div>
+      <button class="add-btn" onclick="openAdd()">+ Add booking</button>
+    </div>
+  </div>
+
+  <div class="metrics" id="metrics"></div>
+
+  <div id="view-calendar">
+    <div class="section-title">Occupancy overview</div>
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+          <div class="cal-month" id="cal-month-title"></div>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">&#8250;</button>
+        </div>
+        <div class="cal-legend">
+          <div class="leg-item"><div class="leg-dot" style="background:#9FE1CB"></div>Daily</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#B5D4F4"></div>Weekly</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#F4C0D1"></div>Monthly</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#FAC775"></div>Yearly</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#C0DD97"></div>Hostaway</div>
+        </div>
+      </div>
+      <div class="cal-grid-wrap">
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-bookings" style="display:none">
+    <div class="bookings-wrap">
+      <div class="bookings-header">
+        <div class="filter-row">
+          <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" onclick="setFilter('Manis 1',this)">Manis 1</button>
+          <button class="filter-btn" onclick="setFilter('Manis 2',this)">Manis 2</button>
+          <button class="filter-btn" onclick="setFilter('Manis 3',this)">Manis 3</button>
+          <button class="filter-btn" onclick="setFilter('Manis 4',this)">Manis 4</button>
+          <button class="filter-btn" onclick="setFilter('daily',this)">Daily</button>
+          <button class="filter-btn" onclick="setFilter('weekly',this)">Weekly</button>
+          <button class="filter-btn" onclick="setFilter('monthly',this)">Monthly</button>
+          <button class="filter-btn" onclick="setFilter('yearly',this)">Yearly</button>
+          <button class="filter-btn" onclick="setFilter('Hostaway',this)">Hostaway</button>
+        </div>
+        <input class="search-input" type="text" placeholder="Search guest..." oninput="doSearch(this.value)">
+      </div>
+      <div class="blist-header">
+        <div>Villa</div><div>Guest</div><div>Dates</div><div>Type / Source</div><div>Price (IDR)</div><div></div>
+      </div>
+      <div id="booking-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title"></div>
+    <div id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCSVFile(this)">
+
+<script>
+var VILLAS=['Manis 1','Manis 2','Manis 3','Manis 4'];
+var VCLS=['v1','v2','v3','v4'];
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+var bookings=loadBookings();
+var nextId=bookings.reduce(function(m,b){return Math.max(m,b.id||0)},0)+1;
+var currentView='calendar',currentFilter='all',currentSearch='',editId=null;
+var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+var csvRows=null,csvHeaders=null;
+
+function loadBookings(){
+  try{var d=localStorage.getItem('manisVillasBookings');if(d)return JSON.parse(d)}catch(e){}
+  return [
+    {id:1,villa:'Manis 1',guest:'Dewi Sartika',contact:'+62 812 3456 7890',checkin:'2026-05-01',checkout:'2026-05-08',type:'weekly',source:'WhatsApp',price:12500000,notes:'Early check-in'},
+    {id:2,villa:'Manis 2',guest:'James & Lucy Thompson',contact:'+44 7911 123456',checkin:'2026-05-03',checkout:'2026-05-10',type:'weekly',source:'Hostaway',price:14000000,notes:''},
+    {id:3,villa:'Manis 3',guest:'Budi Santoso',contact:'+62 813 9876 5432',checkin:'2026-05-01',checkout:'2026-05-31',type:'monthly',source:'WhatsApp',price:35000000,notes:'Long stay, parking needed'},
+    {id:4,villa:'Manis 4',guest:'Yuki Tanaka',contact:'+81 90 1234 5678',checkin:'2026-05-06',checkout:'2026-05-09',type:'daily',source:'Direct',price:4500000,notes:''},
+    {id:5,villa:'Manis 1',guest:'Ahmad Fauzi',contact:'+62 878 1122 3344',checkin:'2026-05-10',checkout:'2026-05-25',type:'weekly',source:'WhatsApp',price:28000000,notes:'Honeymoon couple'},
+    {id:6,villa:'Manis 2',guest:'Sarah Kim',contact:'+82 10 9876 5432',checkin:'2026-05-14',checkout:'2026-05-17',type:'daily',source:'Hostaway',price:5400000,notes:''},
+    {id:7,villa:'Manis 4',guest:'PT Nusa Digital',contact:'+62 21 5555 0001',checkin:'2026-01-01',checkout:'2026-12-31',type:'yearly',source:'Direct',price:360000000,notes:'Corporate yearly contract'}
+  ];
+}
+
+function saveBookings(){try{localStorage.setItem('manisVillasBookings',JSON.stringify(bookings))}catch(e){}}
+
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
+
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate()}
+function dateNum(s){var p=s.split('-');return parseInt(p[0])*10000+parseInt(p[1])*100+parseInt(p[2])}
+function inRange(y,m,d,b){var dt=y*10000+(m+1)*100+d;return dt>=dateNum(b.checkin)&&dt<dateNum(b.checkout)}
+function fmtIDR(n){if(!n&&n!==0)return '—';return 'Rp '+Math.round(Number(n)).toLocaleString('id-ID')}
+function fmtD(s){if(!s)return '';var p=s.split('-');return p[2]+' '+MONTHS[parseInt(p[1])-1].slice(0,3)}
+function getTypeCls(t){return 't-'+(t||'daily').toLowerCase()}
+function getCalCls(b){if(b._imported)return 'booked-hostaway';return 'booked-'+(b.type||'daily').toLowerCase()}
+
+function renderMetrics(){
+  var now=new Date(),ty=now.getFullYear(),tm=now.getMonth(),td=now.getDate();
+  var occupied=VILLAS.filter(function(v){return bookings.some(function(b){return b.villa===v&&inRange(ty,tm,td,b)})}).length;
+  var occ=Math.round(occupied/4*100);
+  var ms=new Date(ty,tm,1),me=new Date(ty,tm+1,0);
+  var rev=bookings.filter(function(b){return new Date(b.checkin)<=me&&new Date(b.checkout)>=ms}).reduce(function(a,b){return a+Number(b.price||0)},0);
+  var upcoming=bookings.filter(function(b){return new Date(b.checkin)>now}).length;
+  var active=bookings.filter(function(b){return new Date(b.checkin)<=now&&new Date(b.checkout)>now}).length;
+  document.getElementById('metrics').innerHTML=
+    '<div class="metric"><div class="metric-label">Occupancy today</div><div class="metric-val">'+occ+'%</div><div class="metric-sub">'+occupied+' of 4 villas</div></div>'+
+    '<div class="metric"><div class="metric-label">Active stays</div><div class="metric-val">'+active+'</div><div class="metric-sub">checked in now</div></div>'+
+    '<div class="metric"><div class="metric-label">Upcoming</div><div class="metric-val">'+upcoming+'</div><div class="metric-sub">bookings ahead</div></div>'+
+    '<div class="metric"><div class="metric-label">Revenue this month</div><div class="metric-val" style="font-size:15px">'+fmtIDR(rev)+'</div><div class="metric-sub">'+MONTHS[tm]+'</div></div>';
+}
+
+function renderCalendar(){
+  var days=daysInMonth(calYear,calMonth),now=new Date();
+  document.getElementById('cal-month-title').textContent=MONTHS[calMonth]+' '+calYear;
+  var hdr='<div class="villa-row-header"><span class="first">Villa</span>';
+  for(var d=1;d<=days;d++)hdr+='<span>'+d+'</span>';
+  hdr+='</div>';
+  var rows='';
+  VILLAS.forEach(function(v,vi){
+    rows+='<div class="villa-row"><span class="villa-label">'+v+'</span>';
+    for(var d=1;d<=days;d++){
+      var bk=bookings.find(function(b){return b.villa===v&&inRange(calYear,calMonth,d,b)});
+      var isTd=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
+      var cls='day-cell '+(bk?getCalCls(bk):'empty')+(isTd?' today-mark':'');
+      var tt=bk?bk.guest+' ('+bk.type+', '+bk.source+')':'';
+      rows+='<div class="'+cls+'" title="'+tt+'"></div>';
+    }
+    rows+='</div>';
+  });
+  document.getElementById('cal-grid').innerHTML=hdr+rows;
+}
+
+function renderBookings(){
+  var list=bookings.filter(function(b){
+    var fm=currentFilter==='all'||b.villa===currentFilter||b.type===currentFilter||b.source===currentFilter;
+    var sm=!currentSearch||b.guest.toLowerCase().includes(currentSearch.toLowerCase())||(b.contact||'').includes(currentSearch);
+    return fm&&sm;
+  }).sort(function(a,b){return a.checkin.localeCompare(b.checkin)});
+  if(!list.length){document.getElementById('booking-list').innerHTML='<div class="empty-state">No bookings found.</div>';return}
+  document.getElementById('booking-list').innerHTML=list.map(function(b){
+    var vi=VILLAS.indexOf(b.villa),vc=vi>=0?VCLS[vi]:'v1';
+    return '<div class="booking-row">'+
+      '<div><span class="villa-badge '+vc+'">'+b.villa+'</span></div>'+
+      '<div><div class="guest-name">'+b.guest+'</div><div class="guest-contact">'+(b.contact||'')+'</div></div>'+
+      '<div class="dates-cell">'+fmtD(b.checkin)+' &rarr; '+fmtD(b.checkout)+'</div>'+
+      '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center"><span class="type-badge '+getTypeCls(b.type)+'">'+b.type+'</span><span class="src-badge src-'+(b.source||'direct').toLowerCase()+'">'+b.source+'</span></div>'+
+      '<div class="price-cell">'+fmtIDR(b.price)+'</div>'+
+      '<div style="display:flex;gap:2px"><button class="action-btn" onclick="openEdit('+b.id+')" title="Edit">&#9998;</button><button class="action-btn del" onclick="openDelete('+b.id+')" title="Delete">&#10005;</button></div>'+
+    '</div>';
+  }).join('');
+}
+
+function setView(v){
+  currentView=v;
+  document.getElementById('view-calendar').style.display=v==='calendar'?'block':'none';
+  document.getElementById('view-bookings').style.display=v==='bookings'?'block':'none';
+  document.getElementById('tab-cal').classList.toggle('active',v==='calendar');
+  document.getElementById('tab-book').classList.toggle('active',v==='bookings');
+  if(v==='calendar')renderCalendar();
+  if(v==='bookings')renderBookings();
+}
+
+function changeMonth(d){calMonth+=d;if(calMonth<0){calMonth=11;calYear--}if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
+function setFilter(f,el){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');renderBookings()}
+function doSearch(v){currentSearch=v;renderBookings()}
+
+function bookingFormHTML(b){
+  b=b||{};
+  var td=new Date().toISOString().split('T')[0];
+  return '<div class="form-grid">'+
+    '<div class="form-group"><label class="form-label">Villa</label><select class="form-select" id="f-villa">'+VILLAS.map(function(v){return '<option'+(b.villa===v?' selected':'')+'>'+v+'</option>'}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Booking type</label><select class="form-select" id="f-type"><option value="daily"'+(b.type==='daily'?' selected':'')+'>Daily</option><option value="weekly"'+(b.type==='weekly'?' selected':'')+'>Weekly</option><option value="monthly"'+(b.type==='monthly'?' selected':'')+'>Monthly</option><option value="yearly"'+(b.type==='yearly'?' selected':'')+'>Yearly</option></select></div>'+
+    '<div class="form-group"><label class="form-label">Guest name</label><input class="form-input" id="f-guest" type="text" placeholder="Full name" value="'+(b.guest||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label">Contact (WA / phone)</label><input class="form-input" id="f-contact" type="text" placeholder="+62..." value="'+(b.contact||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label">Check-in</label><input class="form-input" id="f-checkin" type="date" value="'+(b.checkin||td)+'"></div>'+
+    '<div class="form-group"><label class="form-label">Check-out</label><input class="form-input" id="f-checkout" type="date" value="'+(b.checkout||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label">Price (IDR)</label><input class="form-input" id="f-price" type="number" placeholder="0" value="'+(b.price||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label">Source</label><select class="form-select" id="f-source"><option'+(b.source==='Hostaway'?' selected':'')+'>Hostaway</option><option'+(b.source==='WhatsApp'?' selected':'')+'>WhatsApp</option><option'+((!b.source||b.source==='Direct')?' selected':'')+'>Direct</option></select></div>'+
+    '<div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Special requests, notes...">'+(b.notes||'')+'</textarea></div>'+
+  '</div>';
+}
+
+function readForm(){
+  return {
+    villa:document.getElementById('f-villa').value,
+    type:document.getElementById('f-type').value,
+    guest:document.getElementById('f-guest').value.trim(),
+    contact:document.getElementById('f-contact').value.trim(),
+    checkin:document.getElementById('f-checkin').value,
+    checkout:document.getElementById('f-checkout').value,
+    price:Number(document.getElementById('f-price').value)||0,
+    source:document.getElementById('f-source').value,
+    notes:document.getElementById('f-notes').value.trim()
+  };
+}
+
+function openAdd(){
+  editId=null;
+  document.getElementById('modal-title').textContent='Add booking';
+  document.getElementById('modal-body').innerHTML=bookingFormHTML({});
+  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="saveBooking()">Save booking</button>';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function openEdit(id){
+  editId=id;
+  var b=bookings.find(function(x){return x.id===id});
+  document.getElementById('modal-title').textContent='Edit booking';
+  document.getElementById('modal-body').innerHTML=bookingFormHTML(b);
+  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="saveBooking()">Update</button>';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function openDelete(id){
+  editId=id;
+  var b=bookings.find(function(x){return x.id===id});
+  document.getElementById('modal-title').textContent='Remove booking';
+  document.getElementById('modal-body').innerHTML='<div class="alert-box alert-danger">Remove booking for <strong>'+b.guest+'</strong> ('+b.villa+', '+fmtD(b.checkin)+'&rarr;'+fmtD(b.checkout)+')? This cannot be undone.</div>';
+  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="danger-btn" onclick="confirmDelete()">Yes, remove</button>';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function confirmDelete(){bookings=bookings.filter(function(b){return b.id!==editId});saveBookings();closeModal();refresh();toast('Booking removed')}
+
+function saveBooking(){
+  var f=readForm();
+  if(!f.guest||!f.checkin||!f.checkout){alert('Please fill in guest name and dates.');return}
+  if(f.checkin>=f.checkout){alert('Check-out must be after check-in.');return}
+  if(editId){Object.assign(bookings.find(function(b){return b.id===editId}),f);toast('Booking updated')}
+  else{bookings.push(Object.assign({id:nextId++},f));toast('Booking added')}
+  saveBookings();closeModal();refresh();
+}
+
+function closeModal(){document.getElementById('modal-overlay').classList.remove('show');editId=null}
+
+function refresh(){renderMetrics();if(currentView==='calendar')renderCalendar();if(currentView==='bookings')renderBookings()}
+
+function openImport(){
+  document.getElementById('modal-title').textContent='Import from Hostaway CSV';
+  document.getElementById('modal-body').innerHTML=
+    '<div class="alert-box alert-warn">In Hostaway: go to <strong>Reservations &rarr; Export</strong> and download as CSV. Then drop the file below. Columns will be auto-detected.</div>'+
+    '<div class="import-zone" id="import-zone" onclick="document.getElementById(\'csv-file-input\').click()">'+
+      '<strong>Click to choose your CSV file</strong>'+
+      '<p>or drag and drop the Hostaway export here</p>'+
+    '</div>'+
+    '<div id="import-preview" style="margin-top:14px"></div>';
+  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button>';
+  var zone=document.getElementById('import-zone');
+  zone.addEventListener('dragover',function(e){e.preventDefault();zone.style.borderColor='#1D9E75';zone.style.background='#f0faf6'});
+  zone.addEventListener('dragleave',function(){zone.style.borderColor='#ddd';zone.style.background=''});
+  zone.addEventListener('drop',function(e){e.preventDefault();zone.style.borderColor='#ddd';zone.style.background='';var f=e.dataTransfer.files[0];if(f)processCSV(f)});
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function handleCSVFile(inp){if(inp.files[0])processCSV(inp.files[0]);inp.value=''}
+
+function processCSV(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var rows=parseCSV(e.target.result);
+    if(rows.length<2){document.getElementById('import-preview').innerHTML='<div class="alert-box alert-danger">Could not read this file. Make sure it is a valid CSV from Hostaway.</div>';return}
+    showColumnMapper(rows);
+  };
+  reader.readAsText(file);
+}
+
+function parseCSV(text){
+  return text.trim().split(/\r?\n/).map(function(line){
+    var result=[],cur='',inQ=false;
+    for(var i=0;i<line.length;i++){
+      var c=line[i];
+      if(c==='"'){inQ=!inQ}else if(c===','&&!inQ){result.push(cur.trim());cur=''}else{cur+=c}
+    }
+    result.push(cur.trim());
+    return result;
+  });
+}
+
+function showColumnMapper(rows){
+  csvRows=rows;csvHeaders=rows[0];
+  var GUESSES={guest:['guest','name','guest name','customer','first name'],checkin:['check-in','check in','arrival','checkin','start date'],checkout:['check-out','check out','departure','checkout','end date'],price:['total','amount','price','revenue','payout'],contact:['phone','email','contact','mobile'],notes:['notes','comment','special','requests'],villa:['unit','property','listing','room','villa']};
+  function bestGuess(key){var g=GUESSES[key]||[];for(var i=0;i<csvHeaders.length;i++){if(g.some(function(gk){return csvHeaders[i].toLowerCase().includes(gk)}))return i}return ''}
+  var none='<option value="">— skip —</option>';
+  var opts=csvHeaders.map(function(h,i){return '<option value="'+i+'">'+h+'</option>'}).join('');
+  function sel(id,key){var v=bestGuess(key);var o=opts.replace('value="'+v+'"','value="'+v+'" selected');return '<select class="form-select" id="map-'+id+'" style="font-size:12px">'+none+o+'</select>'}
+  document.getElementById('import-preview').innerHTML=
+    '<div style="font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:10px">Map your CSV columns</div>'+
+    '<div class="map-grid">'+
+      '<div><div class="map-label">Guest name *</div>'+sel('guest','guest')+'</div>'+
+      '<div><div class="map-label">Check-in *</div>'+sel('checkin','checkin')+'</div>'+
+      '<div><div class="map-label">Check-out *</div>'+sel('checkout','checkout')+'</div>'+
+      '<div><div class="map-label">Price (IDR)</div>'+sel('price','price')+'</div>'+
+      '<div><div class="map-label">Contact / email</div>'+sel('contact','contact')+'</div>'+
+      '<div><div class="map-label">Notes</div>'+sel('notes','notes')+'</div>'+
+      '<div><div class="map-label">Villa / unit column</div>'+sel('villa','villa')+'</div>'+
+      '<div><div class="map-label">Default villa (if no column)</div><select class="form-select" id="map-default-villa" style="font-size:12px">'+VILLAS.map(function(v){return '<option>'+v+'</option>'}).join('')+'</select></div>'+
+    '</div>'+
+    '<div id="map-preview-rows"></div>';
+  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="runImport()"">Preview ('+( rows.length-1)+' rows)</button>';
+}
+
+function getColVal(row,id){var v=document.getElementById('map-'+id);if(!v||v.value==='')return '';return row[parseInt(v.value)]||''}
+function parseDate(s){if(!s)return '';s=s.trim().replace(/\//g,'-');if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;var d=new Date(s);if(!isNaN(d)){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}return ''}
+function guessType(ci,co){if(!ci||!co)return 'daily';var diff=(new Date(co)-new Date(ci))/(86400000);if(diff<=7)return 'daily';if(diff<=31)return 'weekly';if(diff<=180)return 'monthly';return 'yearly'}
+function mapVilla(raw){if(!raw)return '';var r=raw.toLowerCase();for(var i=0;i<VILLAS.length;i++){if(r.includes((i+1).toString())||r.toLowerCase()===VILLAS[i].toLowerCase())return VILLAS[i]}return ''}
+
+function runImport(){
+  var defVilla=document.getElementById('map-default-villa').value;
+  var parsed=[];
+  for(var i=1;i<csvRows.length;i++){
+    var row=csvRows[i];if(row.every(function(c){return !c}))continue;
+    var guest=getColVal(row,'guest'),ci=parseDate(getColVal(row,'checkin')),co=parseDate(getColVal(row,'checkout'));
+    if(!guest||!ci||!co)continue;
+    var villa=mapVilla(getColVal(row,'villa'))||defVilla;
+    var price=Number((getColVal(row,'price')||'').replace(/[^0-9.]/g,''))||0;
+    parsed.push({guest:guest,checkin:ci,checkout:co,villa:villa,price:price,contact:getColVal(row,'contact'),notes:getColVal(row,'notes'),type:guessType(ci,co),source:'Hostaway',_imported:true});
+  }
+  if(!parsed.length){document.getElementById('map-preview-rows').innerHTML='<div class="alert-box alert-danger" style="margin-top:10px">No valid rows found. Check that guest, check-in and check-out columns are mapped.</div>';return}
+  var dups=0,conflicts=[];
+  var toAdd=parsed.filter(function(p){
+    var isDup=bookings.some(function(b){return b.guest===p.guest&&b.checkin===p.checkin&&b.checkout===p.checkout&&b.villa===p.villa});
+    if(isDup){dups++;return false}
+    if(bookings.some(function(b){return b.villa===p.villa&&dateNum(p.checkin)<dateNum(b.checkout)&&dateNum(p.checkout)>dateNum(b.checkin)}))conflicts.push(p);
+    return true;
+  });
+  var html='<div class="alert-box alert-success" style="margin-top:12px">'+toAdd.length+' booking(s) ready to import'+(dups?' &mdash; '+dups+' duplicate(s) skipped':'')+( conflicts.length?' &mdash; <strong>'+conflicts.length+' date overlap(s)</strong> flagged':'')+'. </div>';
+  if(conflicts.length){html+='<div style="font-size:12px;font-weight:600;color:#666;margin:8px 0 4px">Date overlaps — review before importing</div><div class="conflict-list">'+conflicts.map(function(p){return '<div class="conflict-item">'+p.guest+' &mdash; '+p.villa+' ('+fmtD(p.checkin)+' &rarr; '+fmtD(p.checkout)+')<span class="pill-conf">overlap</span></div>'}).join('')+'</div>'}
+  document.getElementById('map-preview-rows').innerHTML=html;
+  var cleanCount=toAdd.filter(function(p){return !conflicts.includes(p)}).length;
+  document.getElementById('modal-footer').innerHTML=
+    '<button class="cancel-btn" onclick="closeModal()">Cancel</button>'+
+    (conflicts.length&&cleanCount>0?'<button class="cancel-btn" id="import-clean-btn">Import '+cleanCount+' (skip overlaps)</button>':'')+
+    '<button class="save-btn" id="import-all-btn">Import all '+toAdd.length+'</button>';
+  document.getElementById('import-all-btn').onclick=function(){doImport(toAdd)};
+  if(document.getElementById('import-clean-btn'))document.getElementById('import-clean-btn').onclick=function(){doImport(toAdd.filter(function(p){return !conflicts.includes(p)}))};
+}
+
+function doImport(rows){
+  rows.forEach(function(r){bookings.push(Object.assign({id:nextId++},r))});
+  saveBookings();closeModal();refresh();toast(rows.length+' bookings imported from Hostaway');
+}
+
+refresh();renderCalendar();
+</script>
+</body>
+</html>
