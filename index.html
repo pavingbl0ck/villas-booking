@@ -262,8 +262,17 @@ function renderMetrics(){
   var now=new Date(),ty=now.getFullYear(),tm=now.getMonth(),td=now.getDate();
   var occupied=VILLAS.filter(function(v){return bookings.some(function(b){return b.villa===v&&inRange(ty,tm,td,b)})}).length;
   var occ=Math.round(occupied/4*100);
-  var ms=new Date(ty,tm,1),me=new Date(ty,tm+1,0);
-  var rev=bookings.filter(function(b){return new Date(b.checkin)<=me&&new Date(b.checkout)>=ms}).reduce(function(a,b){return a+Number(b.price||0)},0);
+  var ms=new Date(ty,tm,1),me=new Date(ty,tm+1,1);
+  var rev=bookings.filter(function(b){return new Date(b.checkin)<me&&new Date(b.checkout)>ms}).reduce(function(a,b){
+    var bStart=new Date(b.checkin),bEnd=new Date(b.checkout);
+    var totalDays=(bEnd-bStart)/86400000;
+    if(totalDays<=0)return a;
+    var overlapStart=bStart<ms?ms:bStart;
+    var overlapEnd=bEnd>me?me:bEnd;
+    var overlapDays=(overlapEnd-overlapStart)/86400000;
+    if(overlapDays<=0)return a;
+    return a+Number(b.price||0)*(overlapDays/totalDays);
+  },0);
   var upcoming=bookings.filter(function(b){return new Date(b.checkin)>now}).length;
   var active=bookings.filter(function(b){return new Date(b.checkin)<=now&&new Date(b.checkout)>now}).length;
   document.getElementById('metrics').innerHTML=
