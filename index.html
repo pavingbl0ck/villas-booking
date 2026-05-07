@@ -185,6 +185,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Import Hostaway CSV
       </button>
+      <button class="import-btn" onclick="exportCSV()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 14V6M5 11l3 3 3-3M3 3h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export CSV
+      </button>
       <div class="tab-btns">
         <button class="tab-btn active" id="tab-cal" onclick="setView('calendar')">Calendar</button>
         <button class="tab-btn" id="tab-book" onclick="setView('bookings')">Bookings</button>
@@ -593,6 +597,34 @@ function runImport(){
 function doImport(rows){
   rows.forEach(function(r){bookings.push(Object.assign({id:nextId++},r))});
   saveBookings();closeModal();refresh();toast(rows.length+' bookings imported from Hostaway');
+}
+
+function exportCSV(){
+  if(!bookings.length){toast('No bookings to export');return}
+  var headers=['Villa','Guest','Contact','Check-in','Check-out','Type','Source','Price (IDR)','Notes'];
+  var rows=bookings.sort(function(a,b){return a.checkin.localeCompare(b.checkin)}).map(function(b){
+    return [
+      b.villa,
+      b.guest,
+      b.contact||'',
+      b.checkin,
+      b.checkout,
+      b.type,
+      b.source,
+      b.price||0,
+      (b.notes||'').replace(/,/g,' ')
+    ].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',');
+  });
+  var csv=[headers.join(',')].concat(rows).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  var now=new Date();
+  a.href=url;
+  a.download='manis-villas-bookings-'+now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported '+bookings.length+' bookings');
 }
 
 // ── PIN LOCK ──────────────────────────────────────────────
