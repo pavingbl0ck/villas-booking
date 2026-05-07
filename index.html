@@ -130,9 +130,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cell-popup-icon{width:14px;text-align:center;flex-shrink:0;color:#aaa}
 .cell-popup-edit{display:block;width:100%;margin-top:10px;background:#f5f4f0;border:none;border-radius:7px;padding:7px;font-size:12px;font-weight:500;color:#1a1a18;cursor:pointer;font-family:inherit;text-align:center;transition:background 0.15s}
 .cell-popup-edit:hover{background:#e8e7e2}
+.pin-screen{position:fixed;inset:0;background:#f5f4f0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.pin-card{background:#fff;border-radius:20px;padding:36px 32px;width:320px;max-width:100%;border:1px solid #ece9e2;box-shadow:0 8px 40px rgba(0,0,0,0.10);text-align:center}
+.pin-logo{font-size:22px;font-weight:600;color:#1a1a18;margin-bottom:4px}.pin-logo span{color:#1D9E75}
+.pin-subtitle{font-size:13px;color:#999;margin-bottom:28px}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:#e8e7e2;transition:background 0.15s}
+.pin-dot.filled{background:#1D9E75}
+.pin-dot.error{background:#A32D2D}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.pin-key{background:#f5f4f0;border:none;border-radius:12px;height:60px;font-size:20px;font-weight:500;color:#1a1a18;cursor:pointer;font-family:inherit;transition:all 0.1s;-webkit-tap-highlight-color:transparent}
+.pin-key:hover{background:#e8e7e2}
+.pin-key:active{background:#ddd;transform:scale(0.95)}
+.pin-key.zero{grid-column:2}
+.pin-key.del{background:transparent;font-size:16px;color:#999}
+.pin-key.del:hover{background:#f5f4f0;color:#1a1a18}
+.pin-error{font-size:13px;color:#A32D2D;margin-top:8px;min-height:20px;font-weight:500}
 </style>
 </head>
 <body>
+<div class="pin-screen" id="pin-screen">
+  <div class="pin-card">
+    <div class="pin-logo">Manis <span>Villas</span></div>
+    <div class="pin-subtitle">Enter your PIN to continue</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+      <div class="pin-dot" id="pd4"></div>
+      <div class="pin-dot" id="pd5"></div>
+    </div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key zero" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
 <div class="outer">
   <div class="topbar">
     <div class="logo">Manis <span>Villas</span> &mdash; Booking Manager</div>
@@ -551,12 +595,73 @@ function doImport(rows){
   saveBookings();closeModal();refresh();toast(rows.length+' bookings imported from Hostaway');
 }
 
+// ── PIN LOCK ──────────────────────────────────────────────
+var CORRECT_PIN='666666'; // ← change this to your PIN
+var pinEntry='';
+var pinLocked=false;
+
+function pinKey(d){
+  if(pinLocked)return;
+  if(pinEntry.length>=6)return;
+  pinEntry+=d;
+  updatePinDots(false);
+  if(pinEntry.length===6)setTimeout(checkPin,120);
+}
+
+function pinDel(){
+  if(pinLocked)return;
+  pinEntry=pinEntry.slice(0,-1);
+  updatePinDots(false);
+  document.getElementById('pin-error').textContent='';
+}
+
+function updatePinDots(isError){
+  for(var i=0;i<6;i++){
+    var dot=document.getElementById('pd'+i);
+    dot.className='pin-dot'+(i<pinEntry.length?' filled':'')+(isError?' error':'');
+  }
+}
+
+function checkPin(){
+  if(pinEntry===CORRECT_PIN){
+    try{sessionStorage.setItem('manisAuth','1')}catch(e){}
+    document.getElementById('pin-screen').style.display='none';
+    refresh();renderCalendar();
+  } else {
+    pinLocked=true;
+    updatePinDots(true);
+    document.getElementById('pin-error').textContent='Incorrect PIN. Try again.';
+    setTimeout(function(){
+      pinEntry='';pinLocked=false;
+      updatePinDots(false);
+      document.getElementById('pin-error').textContent='';
+    },1200);
+  }
+}
+
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('pin-screen').style.display==='none')return;
+  if(e.key>='0'&&e.key<='9')pinKey(e.key);
+  if(e.key==='Backspace')pinDel();
+});
+
+// Check if already authenticated this session
+try{
+  if(sessionStorage.getItem('manisAuth')==='1'){
+    document.getElementById('pin-screen').style.display='none';
+    refresh();renderCalendar();
+  }
+}catch(e){
+  document.getElementById('pin-screen').style.display='none';
+  refresh();renderCalendar();
+}
+// ─────────────────────────────────────────────────────────
+
 document.addEventListener('click',function(e){
   var popup=document.getElementById('cell-popup');
   if(popup.classList.contains('show')&&!popup.contains(e.target)){closePopup()}
 });
 
-refresh();renderCalendar();
 </script>
 </body>
 </html>
