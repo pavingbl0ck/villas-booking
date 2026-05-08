@@ -63,19 +63,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .booking-row:last-child{border-bottom:none}
 .booking-row:hover{background:#faf9f6}
 .villa-badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
-.v1{background:#E1F5EE;color:#085041}
-.v2{background:#E6F1FB;color:#0C447C}
-.v3{background:#FAEEDA;color:#633806}
-.v4{background:#FBEAF0;color:#72243E}
+.v1{background:#E1F5EE;color:#085041}.v2{background:#E6F1FB;color:#0C447C}.v3{background:#FAEEDA;color:#633806}.v4{background:#FBEAF0;color:#72243E}
 .src-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;white-space:nowrap}
-.src-hostaway{background:#EAF3DE;color:#27500A}
-.src-whatsapp{background:#E1F5EE;color:#085041}
-.src-direct{background:#FAEEDA;color:#633806}
+.src-hostaway{background:#EAF3DE;color:#27500A}.src-whatsapp{background:#E1F5EE;color:#085041}.src-direct{background:#FAEEDA;color:#633806}
 .type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;white-space:nowrap}
-.t-daily{background:#9FE1CB;color:#085041}
-.t-weekly{background:#B5D4F4;color:#0C447C}
-.t-monthly{background:#F4C0D1;color:#72243E}
-.t-yearly{background:#FAC775;color:#633806}
+.t-daily{background:#9FE1CB;color:#085041}.t-weekly{background:#B5D4F4;color:#0C447C}.t-monthly{background:#F4C0D1;color:#72243E}.t-yearly{background:#FAC775;color:#633806}
 .guest-name{font-weight:600;color:#1a1a18;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .guest-contact{font-size:11px;color:#aaa;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dates-cell{color:#666;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -126,13 +118,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cell-popup-close:hover{color:#1a1a18}
 .cell-popup-guest{font-size:14px;font-weight:600;color:#1a1a18;margin-bottom:6px;padding-right:20px}
 .cell-popup-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;color:#666}
-.cell-popup-row:last-child{margin-bottom:0}
 .cell-popup-icon{width:14px;text-align:center;flex-shrink:0;color:#aaa}
 .cell-popup-edit{display:block;width:100%;margin-top:10px;background:#f5f4f0;border:none;border-radius:7px;padding:7px;font-size:12px;font-weight:500;color:#1a1a18;cursor:pointer;font-family:inherit;text-align:center;transition:background 0.15s}
 .cell-popup-edit:hover{background:#e8e7e2}
 .pin-screen{position:fixed;inset:0;background:#f5f4f0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
 .pin-card{background:#fff;border-radius:20px;padding:36px 32px;width:320px;max-width:100%;border:1px solid #ece9e2;box-shadow:0 8px 40px rgba(0,0,0,0.10);text-align:center}
-.pin-logo{font-size:22px;font-weight:600;color:#1a1a18;margin-bottom:4px}.pin-logo span{color:#1D9E75}
+.pin-logo{font-size:22px;font-weight:600;color:#1a1a18;margin-bottom:4px}
+.pin-logo span{color:#1D9E75}
 .pin-subtitle{font-size:13px;color:#999;margin-bottom:28px}
 .pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px}
 .pin-dot{width:14px;height:14px;border-radius:50%;background:#e8e7e2;transition:background 0.15s}
@@ -146,20 +138,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pin-key.del{background:transparent;font-size:16px;color:#999}
 .pin-key.del:hover{background:#f5f4f0;color:#1a1a18}
 .pin-error{font-size:13px;color:#A32D2D;margin-top:8px;min-height:20px;font-weight:500}
+.sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;background:#ccc;flex-shrink:0}
+.sync-dot.online{background:#1D9E75}
+.sync-dot.syncing{background:#FAC775}
+.sync-dot.error{background:#A32D2D}
+.sync-status{font-size:11px;color:#999;display:flex;align-items:center;margin-top:4px}
+.loading-bar{height:3px;background:linear-gradient(90deg,#1D9E75,#9FE1CB);border-radius:2px;position:fixed;top:0;left:0;z-index:10000;transition:width 0.3s;width:0}
 </style>
 </head>
 <body>
+
+<div class="loading-bar" id="loading-bar"></div>
+
 <div class="pin-screen" id="pin-screen">
   <div class="pin-card">
     <div class="pin-logo">Manis <span>Villas</span></div>
     <div class="pin-subtitle">Enter your PIN to continue</div>
-    <div class="pin-dots" id="pin-dots">
-      <div class="pin-dot" id="pd0"></div>
-      <div class="pin-dot" id="pd1"></div>
-      <div class="pin-dot" id="pd2"></div>
-      <div class="pin-dot" id="pd3"></div>
-      <div class="pin-dot" id="pd4"></div>
-      <div class="pin-dot" id="pd5"></div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
+      <div class="pin-dot" id="pd4"></div><div class="pin-dot" id="pd5"></div>
     </div>
     <div class="pin-grid">
       <button class="pin-key" onclick="pinKey('1')">1</button>
@@ -177,9 +175,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="pin-error" id="pin-error"></div>
   </div>
 </div>
+
 <div class="outer">
   <div class="topbar">
-    <div class="logo">Manis <span>Villas</span> &mdash; Booking Manager</div>
+    <div>
+      <div class="logo">Manis <span>Villas</span> &mdash; Booking Manager</div>
+      <div class="sync-status" id="sync-status">
+        <span class="sync-dot" id="sync-dot"></span><span id="sync-text">Connecting...</span>
+      </div>
+    </div>
     <div class="topbar-right">
       <button class="import-btn" onclick="openImport()">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -271,33 +275,70 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCSVFile(this)">
 
 <script>
+// ── CONFIG — edit these two lines ─────────────────────────
+var SUPABASE_URL='https://sthueblkkuyhzcnqvbab.supabase.co';
+var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0aHVlYmxra3V5aHpjbnF2YmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTgzNzgsImV4cCI6MjA5MzczNDM3OH0.yYgC8ECK3wvJWKbVEE_YR__7z074aQkqMiLKzsmq-ao';
+var CORRECT_PIN='666666'; // ← replace with your PIN before uploading
+// ─────────────────────────────────────────────────────────
+
 var VILLAS=['Manis 1','Manis 2','Manis 3','Manis 4'];
 var VCLS=['v1','v2','v3','v4'];
 var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-var bookings=loadBookings();
-var nextId=bookings.reduce(function(m,b){return Math.max(m,b.id||0)},0)+1;
+var bookings=[];
 var currentView='calendar',currentFilter='all',currentSearch='',editId=null;
 var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 var csvRows=null,csvHeaders=null;
 
-function loadBookings(){
-  try{var d=localStorage.getItem('manisVillasBookings');if(d)return JSON.parse(d)}catch(e){}
-  return [
-    {id:1,villa:'Manis 1',guest:'Dewi Sartika',contact:'+62 812 3456 7890',checkin:'2026-05-01',checkout:'2026-05-08',type:'weekly',source:'WhatsApp',price:12500000,notes:'Early check-in'},
-    {id:2,villa:'Manis 2',guest:'James & Lucy Thompson',contact:'+44 7911 123456',checkin:'2026-05-03',checkout:'2026-05-10',type:'weekly',source:'Hostaway',price:14000000,notes:''},
-    {id:3,villa:'Manis 3',guest:'Budi Santoso',contact:'+62 813 9876 5432',checkin:'2026-05-01',checkout:'2026-05-31',type:'monthly',source:'WhatsApp',price:35000000,notes:'Long stay, parking needed'},
-    {id:4,villa:'Manis 4',guest:'Yuki Tanaka',contact:'+81 90 1234 5678',checkin:'2026-05-06',checkout:'2026-05-09',type:'daily',source:'Direct',price:4500000,notes:''},
-    {id:5,villa:'Manis 1',guest:'Ahmad Fauzi',contact:'+62 878 1122 3344',checkin:'2026-05-10',checkout:'2026-05-25',type:'weekly',source:'WhatsApp',price:28000000,notes:'Honeymoon couple'},
-    {id:6,villa:'Manis 2',guest:'Sarah Kim',contact:'+82 10 9876 5432',checkin:'2026-05-14',checkout:'2026-05-17',type:'daily',source:'Hostaway',price:5400000,notes:''},
-    {id:7,villa:'Manis 4',guest:'PT Nusa Digital',contact:'+62 21 5555 0001',checkin:'2026-01-01',checkout:'2026-12-31',type:'yearly',source:'Direct',price:360000000,notes:'Corporate yearly contract'}
-  ];
+// ── SUPABASE ──────────────────────────────────────────────
+function sbH(){return{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=representation'}}
+
+async function sbFetch(method,path,body){
+  var res=await fetch(SUPABASE_URL+'/rest/v1/'+path,{method:method,headers:sbH(),body:body?JSON.stringify(body):undefined});
+  if(!res.ok){var e=await res.text();throw new Error(e)}
+  var t=await res.text();return t?JSON.parse(t):null;
 }
 
-function saveBookings(){try{localStorage.setItem('manisVillasBookings',JSON.stringify(bookings))}catch(e){}}
+function setSyncStatus(state,msg){
+  document.getElementById('sync-dot').className='sync-dot '+state;
+  document.getElementById('sync-text').innerHTML=msg;
+}
 
-function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
+function setLoadingBar(p){
+  document.getElementById('loading-bar').style.width=p+'%';
+  if(p>=100)setTimeout(function(){document.getElementById('loading-bar').style.width='0'},500);
+}
 
+async function loadBookings(){
+  setSyncStatus('syncing','Loading...');setLoadingBar(30);
+  try{
+    var data=await sbFetch('GET','bookings?select=*&order=checkin.asc');
+    bookings=(data||[]).map(function(r){
+      return {id:r.id,villa:r.villa,guest:r.guest,contact:r.contact||'',checkin:r.checkin,
+        checkout:r.checkout,type:r.type||'daily',source:r.source||'Direct',
+        price:Number(r.price||0),notes:r.notes||'',_imported:r.imported||false};
+    });
+    setLoadingBar(100);setSyncStatus('online','Live &mdash; all devices synced');
+  }catch(e){
+    setLoadingBar(100);setSyncStatus('error','Connection error');toast('Could not connect to database');
+  }
+}
+
+async function sbInsert(b){
+  var d=await sbFetch('POST','bookings',{villa:b.villa,guest:b.guest,contact:b.contact||'',
+    checkin:b.checkin,checkout:b.checkout,type:b.type,source:b.source,
+    price:Number(b.price||0),notes:b.notes||'',imported:b._imported||false});
+  return d&&d[0]?d[0].id:null;
+}
+
+async function sbUpdate(id,b){
+  await sbFetch('PATCH','bookings?id=eq.'+id,{villa:b.villa,guest:b.guest,contact:b.contact||'',
+    checkin:b.checkin,checkout:b.checkout,type:b.type,source:b.source,
+    price:Number(b.price||0),notes:b.notes||'',imported:b._imported||false});
+}
+
+async function sbDelete(id){await sbFetch('DELETE','bookings?id=eq.'+id)}
+
+// ── HELPERS ───────────────────────────────────────────────
 function daysInMonth(y,m){return new Date(y,m+1,0).getDate()}
 function dateNum(s){var p=s.split('-');return parseInt(p[0])*10000+parseInt(p[1])*100+parseInt(p[2])}
 function inRange(y,m,d,b){var dt=y*10000+(m+1)*100+d;return dt>=dateNum(b.checkin)&&dt<dateNum(b.checkout)}
@@ -305,29 +346,26 @@ function fmtIDR(n){if(!n&&n!==0)return '—';return 'Rp '+Math.round(Number(n)).
 function fmtD(s){if(!s)return '';var p=s.split('-');return p[2]+' '+MONTHS[parseInt(p[1])-1].slice(0,3)}
 function getTypeCls(t){return 't-'+(t||'daily').toLowerCase()}
 function getCalCls(b){if(b._imported)return 'booked-hostaway';return 'booked-'+(b.type||'daily').toLowerCase()}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2800)}
 
+// ── RENDER ────────────────────────────────────────────────
 function renderMetrics(){
-  var now=new Date(),ty=now.getFullYear(),tm=now.getMonth(),td=now.getDate();
-  var occupied=VILLAS.filter(function(v){return bookings.some(function(b){return b.villa===v&&inRange(ty,tm,td,b)})}).length;
-  var occ=Math.round(occupied/4*100);
+  var now=new Date(),ty=now.getFullYear(),tm=now.getMonth();
+  var occupied=VILLAS.filter(function(v){return bookings.some(function(b){return b.villa===v&&inRange(ty,tm,now.getDate(),b)})}).length;
   var ms=new Date(ty,tm,1),me=new Date(ty,tm+1,1);
   var rev=bookings.filter(function(b){return new Date(b.checkin)<me&&new Date(b.checkout)>ms}).reduce(function(a,b){
-    var bStart=new Date(b.checkin),bEnd=new Date(b.checkout);
-    var totalDays=(bEnd-bStart)/86400000;
-    if(totalDays<=0)return a;
-    var overlapStart=bStart<ms?ms:bStart;
-    var overlapEnd=bEnd>me?me:bEnd;
-    var overlapDays=(overlapEnd-overlapStart)/86400000;
-    if(overlapDays<=0)return a;
-    return a+Number(b.price||0)*(overlapDays/totalDays);
+    var s=new Date(b.checkin),e=new Date(b.checkout),td=(e-s)/86400000;
+    if(td<=0)return a;
+    var os=s<ms?ms:s,oe=e>me?me:e,od=(oe-os)/86400000;
+    return od>0?a+Number(b.price||0)*(od/td):a;
   },0);
   var upcoming=bookings.filter(function(b){return new Date(b.checkin)>now}).length;
   var active=bookings.filter(function(b){return new Date(b.checkin)<=now&&new Date(b.checkout)>now}).length;
   document.getElementById('metrics').innerHTML=
-    '<div class="metric"><div class="metric-label">Occupancy today</div><div class="metric-val">'+occ+'%</div><div class="metric-sub">'+occupied+' of 4 villas</div></div>'+
+    '<div class="metric"><div class="metric-label">Occupancy today</div><div class="metric-val">'+Math.round(occupied/4*100)+'%</div><div class="metric-sub">'+occupied+' of 4 villas</div></div>'+
     '<div class="metric"><div class="metric-label">Active stays</div><div class="metric-val">'+active+'</div><div class="metric-sub">checked in now</div></div>'+
     '<div class="metric"><div class="metric-label">Upcoming</div><div class="metric-val">'+upcoming+'</div><div class="metric-sub">bookings ahead</div></div>'+
-    '<div class="metric"><div class="metric-label">Revenue this month</div><div class="metric-val" style="font-size:15px">'+fmtIDR(rev)+'</div><div class="metric-sub">'+MONTHS[tm]+'</div></div>';
+    '<div class="metric"><div class="metric-label">Revenue this month</div><div class="metric-val" style="font-size:15px">'+fmtIDR(rev)+'</div><div class="metric-sub">'+MONTHS[tm]+' (prorated)</div></div>';
 }
 
 function renderCalendar(){
@@ -337,17 +375,13 @@ function renderCalendar(){
   for(var d=1;d<=days;d++)hdr+='<span>'+d+'</span>';
   hdr+='</div>';
   var rows='';
-  VILLAS.forEach(function(v,vi){
+  VILLAS.forEach(function(v){
     rows+='<div class="villa-row"><span class="villa-label">'+v+'</span>';
     for(var d=1;d<=days;d++){
       var bk=bookings.find(function(b){return b.villa===v&&inRange(calYear,calMonth,d,b)});
       var isTd=calYear===now.getFullYear()&&calMonth===now.getMonth()&&d===now.getDate();
       var cls='day-cell '+(bk?getCalCls(bk):'empty')+(isTd?' today-mark':'');
-      if(bk){
-        rows+='<div class="'+cls+'" onclick="showPopup(event,'+bk.id+')"></div>';
-      } else {
-        rows+='<div class="'+cls+'"></div>';
-      }
+      rows+=bk?'<div class="'+cls+'" onclick="showPopup(event,'+bk.id+')"></div>':'<div class="'+cls+'"></div>';
     }
     rows+='</div>';
   });
@@ -380,17 +414,39 @@ function setView(v){
   document.getElementById('view-bookings').style.display=v==='bookings'?'block':'none';
   document.getElementById('tab-cal').classList.toggle('active',v==='calendar');
   document.getElementById('tab-book').classList.toggle('active',v==='bookings');
-  if(v==='calendar')renderCalendar();
-  if(v==='bookings')renderBookings();
+  v==='calendar'?renderCalendar():renderBookings();
 }
-
 function changeMonth(d){calMonth+=d;if(calMonth<0){calMonth=11;calYear--}if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
 function setFilter(f,el){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');renderBookings()}
 function doSearch(v){currentSearch=v;renderBookings()}
+function refresh(){renderMetrics();currentView==='calendar'?renderCalendar():renderBookings()}
 
+// ── CELL POPUP ────────────────────────────────────────────
+function showPopup(e,id){
+  e.stopPropagation();
+  var b=bookings.find(function(x){return x.id===id});if(!b)return;
+  document.getElementById('cp-guest').textContent=b.guest;
+  document.getElementById('cp-dates').textContent=fmtD(b.checkin)+' → '+fmtD(b.checkout);
+  document.getElementById('cp-villa').textContent=b.villa;
+  document.getElementById('cp-type').textContent=b.type.charAt(0).toUpperCase()+b.type.slice(1)+' · '+b.source;
+  document.getElementById('cp-contact').textContent=b.contact||'—';
+  var nr=document.getElementById('cp-notes-row');
+  if(b.notes){document.getElementById('cp-notes').textContent=b.notes;nr.style.display='flex'}else{nr.style.display='none'}
+  document.getElementById('cp-price').textContent=fmtIDR(b.price);
+  document.getElementById('cp-edit-btn').onclick=function(){closePopup();openEdit(id)};
+  var p=document.getElementById('cell-popup');p.style.display='block';
+  var vw=window.innerWidth,vh=window.innerHeight,pw=268,ph=230;
+  var x=e.clientX+12,y=e.clientY+12;
+  if(x+pw>vw-8)x=e.clientX-pw-8;if(y+ph>vh-8)y=e.clientY-ph-8;
+  if(x<8)x=8;if(y<8)y=8;
+  p.style.left=x+'px';p.style.top=y+'px';
+  requestAnimationFrame(function(){p.classList.add('show')});
+}
+function closePopup(){var p=document.getElementById('cell-popup');p.classList.remove('show');setTimeout(function(){p.style.display='none'},150)}
+
+// ── BOOKING FORM ──────────────────────────────────────────
 function bookingFormHTML(b){
-  b=b||{};
-  var td=new Date().toISOString().split('T')[0];
+  b=b||{};var td=new Date().toISOString().split('T')[0];
   return '<div class="form-grid">'+
     '<div class="form-group"><label class="form-label">Villa</label><select class="form-select" id="f-villa">'+VILLAS.map(function(v){return '<option'+(b.villa===v?' selected':'')+'>'+v+'</option>'}).join('')+'</select></div>'+
     '<div class="form-group"><label class="form-label">Booking type</label><select class="form-select" id="f-type"><option value="daily"'+(b.type==='daily'?' selected':'')+'>Daily</option><option value="weekly"'+(b.type==='weekly'?' selected':'')+'>Weekly</option><option value="monthly"'+(b.type==='monthly'?' selected':'')+'>Monthly</option><option value="yearly"'+(b.type==='yearly'?' selected':'')+'>Yearly</option></select></div>'+
@@ -405,17 +461,11 @@ function bookingFormHTML(b){
 }
 
 function readForm(){
-  return {
-    villa:document.getElementById('f-villa').value,
-    type:document.getElementById('f-type').value,
-    guest:document.getElementById('f-guest').value.trim(),
-    contact:document.getElementById('f-contact').value.trim(),
-    checkin:document.getElementById('f-checkin').value,
-    checkout:document.getElementById('f-checkout').value,
-    price:Number(document.getElementById('f-price').value)||0,
-    source:document.getElementById('f-source').value,
-    notes:document.getElementById('f-notes').value.trim()
-  };
+  return {villa:document.getElementById('f-villa').value,type:document.getElementById('f-type').value,
+    guest:document.getElementById('f-guest').value.trim(),contact:document.getElementById('f-contact').value.trim(),
+    checkin:document.getElementById('f-checkin').value,checkout:document.getElementById('f-checkout').value,
+    price:Number(document.getElementById('f-price').value)||0,source:document.getElementById('f-source').value,
+    notes:document.getElementById('f-notes').value.trim()};
 }
 
 function openAdd(){
@@ -425,83 +475,82 @@ function openAdd(){
   document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="saveBooking()">Save booking</button>';
   document.getElementById('modal-overlay').classList.add('show');
 }
-
 function openEdit(id){
-  editId=id;
-  var b=bookings.find(function(x){return x.id===id});
+  editId=id;var b=bookings.find(function(x){return x.id===id});
   document.getElementById('modal-title').textContent='Edit booking';
   document.getElementById('modal-body').innerHTML=bookingFormHTML(b);
   document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="saveBooking()">Update</button>';
   document.getElementById('modal-overlay').classList.add('show');
 }
-
 function openDelete(id){
-  editId=id;
-  var b=bookings.find(function(x){return x.id===id});
+  editId=id;var b=bookings.find(function(x){return x.id===id});
   document.getElementById('modal-title').textContent='Remove booking';
   document.getElementById('modal-body').innerHTML='<div class="alert-box alert-danger">Remove booking for <strong>'+b.guest+'</strong> ('+b.villa+', '+fmtD(b.checkin)+'&rarr;'+fmtD(b.checkout)+')? This cannot be undone.</div>';
   document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="danger-btn" onclick="confirmDelete()">Yes, remove</button>';
   document.getElementById('modal-overlay').classList.add('show');
 }
 
-function confirmDelete(){bookings=bookings.filter(function(b){return b.id!==editId});saveBookings();closeModal();refresh();toast('Booking removed')}
+async function confirmDelete(){
+  var btn=document.querySelector('.danger-btn');if(btn)btn.textContent='Removing...';
+  setSyncStatus('syncing','Saving...');
+  try{
+    await sbDelete(editId);
+    bookings=bookings.filter(function(b){return b.id!==editId});
+    closeModal();refresh();setSyncStatus('online','Live &mdash; all devices synced');toast('Booking removed');
+  }catch(e){setSyncStatus('error','Save failed');toast('Error removing booking')}
+}
 
-function saveBooking(){
+async function saveBooking(){
   var f=readForm();
   if(!f.guest||!f.checkin||!f.checkout){alert('Please fill in guest name and dates.');return}
   if(f.checkin>=f.checkout){alert('Check-out must be after check-in.');return}
-  if(editId){Object.assign(bookings.find(function(b){return b.id===editId}),f);toast('Booking updated')}
-  else{bookings.push(Object.assign({id:nextId++},f));toast('Booking added')}
-  saveBookings();closeModal();refresh();
+  var btn=document.querySelector('#modal-footer .save-btn');
+  if(btn){btn.textContent='Saving...';btn.disabled=true}
+  setSyncStatus('syncing','Saving...');
+  try{
+    if(editId){
+      await sbUpdate(editId,f);
+      Object.assign(bookings.find(function(b){return b.id===editId}),f);
+      toast('Booking updated');
+    } else {
+      var newId=await sbInsert(f);
+      bookings.push(Object.assign({id:newId},f));
+      toast('Booking added');
+    }
+    setSyncStatus('online','Live &mdash; all devices synced');closeModal();refresh();
+  }catch(e){
+    setSyncStatus('error','Save failed');toast('Error saving — check connection');
+    if(btn){btn.textContent=editId?'Update':'Save booking';btn.disabled=false}
+  }
 }
 
 function closeModal(){document.getElementById('modal-overlay').classList.remove('show');editId=null}
 
-function showPopup(e,id){
-  e.stopPropagation();
-  var b=bookings.find(function(x){return x.id===id});
-  if(!b)return;
-  document.getElementById('cp-guest').textContent=b.guest;
-  document.getElementById('cp-dates').textContent=fmtD(b.checkin)+' → '+fmtD(b.checkout);
-  document.getElementById('cp-villa').textContent=b.villa;
-  document.getElementById('cp-type').textContent=b.type.charAt(0).toUpperCase()+b.type.slice(1)+' · '+b.source;
-  document.getElementById('cp-contact').textContent=b.contact||'—';
-  var notesRow=document.getElementById('cp-notes-row');
-  if(b.notes){document.getElementById('cp-notes').textContent=b.notes;notesRow.style.display='flex'}
-  else{notesRow.style.display='none'}
-  document.getElementById('cp-price').textContent=fmtIDR(b.price);
-  document.getElementById('cp-edit-btn').onclick=function(){closePopup();openEdit(id)};
-  var popup=document.getElementById('cell-popup');
-  popup.style.display='block';
-  // Position smartly near the tap/click
-  var vw=window.innerWidth,vh=window.innerHeight;
-  var pw=268,ph=220;
-  var x=e.clientX+12,y=e.clientY+12;
-  if(x+pw>vw-8)x=e.clientX-pw-8;
-  if(y+ph>vh-8)y=e.clientY-ph-8;
-  if(x<8)x=8;
-  if(y<8)y=8;
-  popup.style.left=x+'px';
-  popup.style.top=y+'px';
-  requestAnimationFrame(function(){popup.classList.add('show')});
+// ── CSV EXPORT ────────────────────────────────────────────
+function exportCSV(){
+  if(!bookings.length){toast('No bookings to export');return}
+  var h=['Villa','Guest','Contact','Check-in','Check-out','Type','Source','Price (IDR)','Notes'];
+  var rows=bookings.slice().sort(function(a,b){return a.checkin.localeCompare(b.checkin)}).map(function(b){
+    return [b.villa,b.guest,b.contact||'',b.checkin,b.checkout,b.type,b.source,b.price||0,(b.notes||'').replace(/,/g,' ')]
+      .map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',');
+  });
+  var csv=[h.join(',')].concat(rows).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'),now=new Date();
+  a.href=url;
+  a.download='manis-villas-'+now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'.csv';
+  a.click();URL.revokeObjectURL(url);
+  toast('Exported '+bookings.length+' bookings');
 }
 
-function closePopup(){
-  var popup=document.getElementById('cell-popup');
-  popup.classList.remove('show');
-  setTimeout(function(){popup.style.display='none'},150);
-}
-
-function refresh(){renderMetrics();if(currentView==='calendar')renderCalendar();if(currentView==='bookings')renderBookings()}
-
+// ── CSV IMPORT ────────────────────────────────────────────
 function openImport(){
   document.getElementById('modal-title').textContent='Import from Hostaway CSV';
   document.getElementById('modal-body').innerHTML=
-    '<div class="alert-box alert-warn">In Hostaway: go to <strong>Reservations &rarr; Export</strong> and download as CSV. Then drop the file below. Columns will be auto-detected.</div>'+
+    '<div class="alert-box alert-warn">In Hostaway: go to <strong>Reservations &rarr; Export</strong> and download as CSV. Then drop the file below.</div>'+
     '<div class="import-zone" id="import-zone" onclick="document.getElementById(\'csv-file-input\').click()">'+
-      '<strong>Click to choose your CSV file</strong>'+
-      '<p>or drag and drop the Hostaway export here</p>'+
-    '</div>'+
+      '<strong>Click to choose your CSV file</strong><p>or drag and drop here</p></div>'+
     '<div id="import-preview" style="margin-top:14px"></div>';
   document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button>';
   var zone=document.getElementById('import-zone');
@@ -510,38 +559,29 @@ function openImport(){
   zone.addEventListener('drop',function(e){e.preventDefault();zone.style.borderColor='#ddd';zone.style.background='';var f=e.dataTransfer.files[0];if(f)processCSV(f)});
   document.getElementById('modal-overlay').classList.add('show');
 }
-
 function handleCSVFile(inp){if(inp.files[0])processCSV(inp.files[0]);inp.value=''}
-
 function processCSV(file){
   var reader=new FileReader();
   reader.onload=function(e){
     var rows=parseCSV(e.target.result);
-    if(rows.length<2){document.getElementById('import-preview').innerHTML='<div class="alert-box alert-danger">Could not read this file. Make sure it is a valid CSV from Hostaway.</div>';return}
+    if(rows.length<2){document.getElementById('import-preview').innerHTML='<div class="alert-box alert-danger">Could not read file. Make sure it is a valid CSV from Hostaway.</div>';return}
     showColumnMapper(rows);
-  };
-  reader.readAsText(file);
+  };reader.readAsText(file);
 }
-
 function parseCSV(text){
   return text.trim().split(/\r?\n/).map(function(line){
     var result=[],cur='',inQ=false;
-    for(var i=0;i<line.length;i++){
-      var c=line[i];
-      if(c==='"'){inQ=!inQ}else if(c===','&&!inQ){result.push(cur.trim());cur=''}else{cur+=c}
-    }
-    result.push(cur.trim());
-    return result;
+    for(var i=0;i<line.length;i++){var c=line[i];if(c==='"'){inQ=!inQ}else if(c===','&&!inQ){result.push(cur.trim());cur=''}else{cur+=c}}
+    result.push(cur.trim());return result;
   });
 }
-
 function showColumnMapper(rows){
   csvRows=rows;csvHeaders=rows[0];
-  var GUESSES={guest:['guest','name','guest name','customer','first name'],checkin:['check-in','check in','arrival','checkin','start date'],checkout:['check-out','check out','departure','checkout','end date'],price:['total','amount','price','revenue','payout'],contact:['phone','email','contact','mobile'],notes:['notes','comment','special','requests'],villa:['unit','property','listing','room','villa']};
-  function bestGuess(key){var g=GUESSES[key]||[];for(var i=0;i<csvHeaders.length;i++){if(g.some(function(gk){return csvHeaders[i].toLowerCase().includes(gk)}))return i}return ''}
+  var G={guest:['guest','name','guest name','customer','first name'],checkin:['check-in','check in','arrival','checkin','start date'],checkout:['check-out','check out','departure','checkout','end date'],price:['total','amount','price','revenue','payout'],contact:['phone','email','contact','mobile'],notes:['notes','comment','special','requests'],villa:['unit','property','listing','room','villa']};
+  function best(key){var g=G[key]||[];for(var i=0;i<csvHeaders.length;i++){if(g.some(function(gk){return csvHeaders[i].toLowerCase().includes(gk)}))return i}return ''}
   var none='<option value="">— skip —</option>';
   var opts=csvHeaders.map(function(h,i){return '<option value="'+i+'">'+h+'</option>'}).join('');
-  function sel(id,key){var v=bestGuess(key);var o=opts.replace('value="'+v+'"','value="'+v+'" selected');return '<select class="form-select" id="map-'+id+'" style="font-size:12px">'+none+o+'</select>'}
+  function sel(id,key){var v=best(key);var o=opts.replace('value="'+v+'"','value="'+v+'" selected');return '<select class="form-select" id="map-'+id+'" style="font-size:12px">'+none+o+'</select>'}
   document.getElementById('import-preview').innerHTML=
     '<div style="font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:10px">Map your CSV columns</div>'+
     '<div class="map-grid">'+
@@ -552,20 +592,16 @@ function showColumnMapper(rows){
       '<div><div class="map-label">Contact / email</div>'+sel('contact','contact')+'</div>'+
       '<div><div class="map-label">Notes</div>'+sel('notes','notes')+'</div>'+
       '<div><div class="map-label">Villa / unit column</div>'+sel('villa','villa')+'</div>'+
-      '<div><div class="map-label">Default villa (if no column)</div><select class="form-select" id="map-default-villa" style="font-size:12px">'+VILLAS.map(function(v){return '<option>'+v+'</option>'}).join('')+'</select></div>'+
-    '</div>'+
-    '<div id="map-preview-rows"></div>';
-  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="runImport()"">Preview ('+( rows.length-1)+' rows)</button>';
+      '<div><div class="map-label">Default villa</div><select class="form-select" id="map-default-villa" style="font-size:12px">'+VILLAS.map(function(v){return '<option>'+v+'</option>'}).join('')+'</select></div>'+
+    '</div><div id="map-preview-rows"></div>';
+  document.getElementById('modal-footer').innerHTML='<button class="cancel-btn" onclick="closeModal()">Cancel</button><button class="save-btn" onclick="runImport()">Preview ('+( rows.length-1)+' rows)</button>';
 }
-
 function getColVal(row,id){var v=document.getElementById('map-'+id);if(!v||v.value==='')return '';return row[parseInt(v.value)]||''}
-function parseDate(s){if(!s)return '';s=s.trim().replace(/\//g,'-');if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;var d=new Date(s);if(!isNaN(d)){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}return ''}
-function guessType(ci,co){if(!ci||!co)return 'daily';var diff=(new Date(co)-new Date(ci))/(86400000);if(diff<=7)return 'daily';if(diff<=31)return 'weekly';if(diff<=180)return 'monthly';return 'yearly'}
-function mapVilla(raw){if(!raw)return '';var r=raw.toLowerCase();for(var i=0;i<VILLAS.length;i++){if(r.includes((i+1).toString())||r.toLowerCase()===VILLAS[i].toLowerCase())return VILLAS[i]}return ''}
-
+function parseDate(s){if(!s)return '';s=s.trim().replace(/\//g,'-');if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;var d=new Date(s);if(!isNaN(d))return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return ''}
+function guessType(ci,co){if(!ci||!co)return 'daily';var d=(new Date(co)-new Date(ci))/86400000;if(d<=7)return 'daily';if(d<=31)return 'weekly';if(d<=180)return 'monthly';return 'yearly'}
+function mapVilla(raw){if(!raw)return '';var r=raw.toLowerCase();for(var i=0;i<VILLAS.length;i++){if(r.includes((i+1).toString())||r===VILLAS[i].toLowerCase())return VILLAS[i]}return ''}
 function runImport(){
-  var defVilla=document.getElementById('map-default-villa').value;
-  var parsed=[];
+  var defVilla=document.getElementById('map-default-villa').value,parsed=[];
   for(var i=1;i<csvRows.length;i++){
     var row=csvRows[i];if(row.every(function(c){return !c}))continue;
     var guest=getColVal(row,'guest'),ci=parseDate(getColVal(row,'checkin')),co=parseDate(getColVal(row,'checkout'));
@@ -574,7 +610,7 @@ function runImport(){
     var price=Number((getColVal(row,'price')||'').replace(/[^0-9.]/g,''))||0;
     parsed.push({guest:guest,checkin:ci,checkout:co,villa:villa,price:price,contact:getColVal(row,'contact'),notes:getColVal(row,'notes'),type:guessType(ci,co),source:'Hostaway',_imported:true});
   }
-  if(!parsed.length){document.getElementById('map-preview-rows').innerHTML='<div class="alert-box alert-danger" style="margin-top:10px">No valid rows found. Check that guest, check-in and check-out columns are mapped.</div>';return}
+  if(!parsed.length){document.getElementById('map-preview-rows').innerHTML='<div class="alert-box alert-danger" style="margin-top:10px">No valid rows found. Check column mapping.</div>';return}
   var dups=0,conflicts=[];
   var toAdd=parsed.filter(function(p){
     var isDup=bookings.some(function(b){return b.guest===p.guest&&b.checkin===p.checkin&&b.checkout===p.checkout&&b.villa===p.villa});
@@ -582,8 +618,8 @@ function runImport(){
     if(bookings.some(function(b){return b.villa===p.villa&&dateNum(p.checkin)<dateNum(b.checkout)&&dateNum(p.checkout)>dateNum(b.checkin)}))conflicts.push(p);
     return true;
   });
-  var html='<div class="alert-box alert-success" style="margin-top:12px">'+toAdd.length+' booking(s) ready to import'+(dups?' &mdash; '+dups+' duplicate(s) skipped':'')+( conflicts.length?' &mdash; <strong>'+conflicts.length+' date overlap(s)</strong> flagged':'')+'. </div>';
-  if(conflicts.length){html+='<div style="font-size:12px;font-weight:600;color:#666;margin:8px 0 4px">Date overlaps — review before importing</div><div class="conflict-list">'+conflicts.map(function(p){return '<div class="conflict-item">'+p.guest+' &mdash; '+p.villa+' ('+fmtD(p.checkin)+' &rarr; '+fmtD(p.checkout)+')<span class="pill-conf">overlap</span></div>'}).join('')+'</div>'}
+  var html='<div class="alert-box alert-success" style="margin-top:12px">'+toAdd.length+' booking(s) ready'+(dups?' &mdash; '+dups+' duplicate(s) skipped':'')+(conflicts.length?' &mdash; <strong>'+conflicts.length+' overlap(s)</strong> flagged':'')+'. </div>';
+  if(conflicts.length){html+='<div style="font-size:12px;font-weight:600;color:#666;margin:8px 0 4px">Date overlaps</div><div class="conflict-list">'+conflicts.map(function(p){return '<div class="conflict-item">'+p.guest+' &mdash; '+p.villa+' ('+fmtD(p.checkin)+' &rarr; '+fmtD(p.checkout)+')<span class="pill-conf">overlap</span></div>'}).join('')+'</div>'}
   document.getElementById('map-preview-rows').innerHTML=html;
   var cleanCount=toAdd.filter(function(p){return !conflicts.includes(p)}).length;
   document.getElementById('modal-footer').innerHTML=
@@ -593,107 +629,59 @@ function runImport(){
   document.getElementById('import-all-btn').onclick=function(){doImport(toAdd)};
   if(document.getElementById('import-clean-btn'))document.getElementById('import-clean-btn').onclick=function(){doImport(toAdd.filter(function(p){return !conflicts.includes(p)}))};
 }
-
-function doImport(rows){
-  rows.forEach(function(r){bookings.push(Object.assign({id:nextId++},r))});
-  saveBookings();closeModal();refresh();toast(rows.length+' bookings imported from Hostaway');
+async function doImport(rows){
+  var btn=document.getElementById('import-all-btn');if(btn){btn.textContent='Importing...';btn.disabled=true}
+  setSyncStatus('syncing','Importing...');
+  var imported=0;
+  for(var i=0;i<rows.length;i++){try{var newId=await sbInsert(rows[i]);bookings.push(Object.assign({id:newId},rows[i]));imported++}catch(e){}}
+  setSyncStatus('online','Live &mdash; all devices synced');closeModal();refresh();
+  toast(imported+' bookings imported from Hostaway');
 }
 
-function exportCSV(){
-  if(!bookings.length){toast('No bookings to export');return}
-  var headers=['Villa','Guest','Contact','Check-in','Check-out','Type','Source','Price (IDR)','Notes'];
-  var rows=bookings.sort(function(a,b){return a.checkin.localeCompare(b.checkin)}).map(function(b){
-    return [
-      b.villa,
-      b.guest,
-      b.contact||'',
-      b.checkin,
-      b.checkout,
-      b.type,
-      b.source,
-      b.price||0,
-      (b.notes||'').replace(/,/g,' ')
-    ].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',');
-  });
-  var csv=[headers.join(',')].concat(rows).join('\n');
-  var blob=new Blob([csv],{type:'text/csv'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  var now=new Date();
-  a.href=url;
-  a.download='manis-villas-bookings-'+now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('Exported '+bookings.length+' bookings');
-}
-
-// ── PIN LOCK ──────────────────────────────────────────────
-var CORRECT_PIN='666666'; // ← change this to your PIN
-var pinEntry='';
-var pinLocked=false;
-
-function pinKey(d){
-  if(pinLocked)return;
-  if(pinEntry.length>=6)return;
-  pinEntry+=d;
-  updatePinDots(false);
-  if(pinEntry.length===6)setTimeout(checkPin,120);
-}
-
-function pinDel(){
-  if(pinLocked)return;
-  pinEntry=pinEntry.slice(0,-1);
-  updatePinDots(false);
-  document.getElementById('pin-error').textContent='';
-}
-
-function updatePinDots(isError){
-  for(var i=0;i<6;i++){
-    var dot=document.getElementById('pd'+i);
-    dot.className='pin-dot'+(i<pinEntry.length?' filled':'')+(isError?' error':'');
-  }
-}
-
+// ── PIN ───────────────────────────────────────────────────
+var pinEntry='',pinLocked=false;
+function pinKey(d){if(pinLocked||pinEntry.length>=6)return;pinEntry+=d;updatePinDots(false);if(pinEntry.length===6)setTimeout(checkPin,120)}
+function pinDel(){if(pinLocked)return;pinEntry=pinEntry.slice(0,-1);updatePinDots(false);document.getElementById('pin-error').textContent=''}
+function updatePinDots(err){for(var i=0;i<6;i++){var d=document.getElementById('pd'+i);d.className='pin-dot'+(i<pinEntry.length?' filled':'')+(err?' error':'')}}
 function checkPin(){
   if(pinEntry===CORRECT_PIN){
     try{sessionStorage.setItem('manisAuth','1')}catch(e){}
     document.getElementById('pin-screen').style.display='none';
-    refresh();renderCalendar();
+    loadBookings().then(function(){refresh();renderCalendar()});
   } else {
-    pinLocked=true;
-    updatePinDots(true);
+    pinLocked=true;updatePinDots(true);
     document.getElementById('pin-error').textContent='Incorrect PIN. Try again.';
-    setTimeout(function(){
-      pinEntry='';pinLocked=false;
-      updatePinDots(false);
-      document.getElementById('pin-error').textContent='';
-    },1200);
+    setTimeout(function(){pinEntry='';pinLocked=false;updatePinDots(false);document.getElementById('pin-error').textContent=''},1200);
   }
 }
-
 document.addEventListener('keydown',function(e){
   if(document.getElementById('pin-screen').style.display==='none')return;
   if(e.key>='0'&&e.key<='9')pinKey(e.key);
   if(e.key==='Backspace')pinDel();
 });
 
-// Check if already authenticated this session
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('click',function(e){
+  var p=document.getElementById('cell-popup');
+  if(p.classList.contains('show')&&!p.contains(e.target))closePopup();
+});
+
 try{
   if(sessionStorage.getItem('manisAuth')==='1'){
     document.getElementById('pin-screen').style.display='none';
-    refresh();renderCalendar();
+    loadBookings().then(function(){refresh();renderCalendar()});
   }
 }catch(e){
   document.getElementById('pin-screen').style.display='none';
-  refresh();renderCalendar();
+  loadBookings().then(function(){refresh();renderCalendar()});
 }
-// ─────────────────────────────────────────────────────────
 
-document.addEventListener('click',function(e){
-  var popup=document.getElementById('cell-popup');
-  if(popup.classList.contains('show')&&!popup.contains(e.target)){closePopup()}
-});
-
+// Auto-refresh every 60s so all devices stay in sync
+setInterval(function(){
+  if(document.getElementById('pin-screen').style.display==='none'){
+    loadBookings().then(function(){refresh()});
+  }
+},60000);
 </script>
 </body>
 </html>
